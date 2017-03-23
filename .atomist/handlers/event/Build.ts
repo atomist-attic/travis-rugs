@@ -74,7 +74,7 @@ export const built = new Built()
 
 @EventHandler("travis-build-prs", "Handle build events from pull-requests", 
     new PathExpression<GraphNode, GraphNode>(
-        `/Build()
+        `/Build
             [/on::Repo()/channel::ChatChannel()]
             [/triggeredBy::PullRequest()
                 [/author::GitHubId()[/hasGithubIdentity::Person()/hasChatIdentity::ChatId()]?]
