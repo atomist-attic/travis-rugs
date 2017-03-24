@@ -2,7 +2,7 @@ import {HandleResponse, Response, HandlerContext, Message} from '@atomist/rug/op
 import {ResponseHandler, Parameter, Tags} from '@atomist/rug/operations/Decorators'
 import {renderError, renderSuccess} from './SlackTemplates'
 
-@ResponseHandler("generic-error-handler", "Displays an error in slack")
+@ResponseHandler("GenericErrorHandler", "Displays an error in slack")
 @Tags("errors")
 class GenericErrorHandler implements HandleResponse<any> {
     
@@ -15,8 +15,8 @@ class GenericErrorHandler implements HandleResponse<any> {
 }
 export let errorHandler = new GenericErrorHandler()
 
-@ResponseHandler("generic-success-handler", "Displays a success message in slack")
-@Tags("errors")
+@ResponseHandler("GenericSuccessHandler", "Displays a success message in slack")
+@Tags("success")
 class GenericSuccessHandler implements HandleResponse<any> {
 
     @Parameter({description: "Success msg", pattern: "@any"})

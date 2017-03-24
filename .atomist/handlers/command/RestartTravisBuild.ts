@@ -3,7 +3,7 @@ import {ResponseHandler, ParseJson, CommandHandler, Secrets, MappedParameter, Pa
 import { Issue } from "@atomist/github/core/Core"
 import * as slack from '../SlackTemplates'
 
-@CommandHandler("restart-travis-build", "Restart a Travis CI build")
+@CommandHandler("RestartTravisBuild", "Restart a Travis CI build")
 @Tags("travis", "ci")
 @Secrets("github://user_token?scopes=repo")
 @Intent("restart build", "restart travis build")
@@ -20,8 +20,8 @@ class RestartBuild implements HandleCommand {
         let execute: Respondable<Execute> = 
         {instruction:
           {kind: "execute", name: "restart-travis-build", parameters: this},
-        onSuccess: {kind: "respond", name: "generic-success-handler", parameters: {msg: `Successfully restarted Travis build ${this.buildId}`}},
-        onError: {kind: "respond", name: "generic-error-handler", parameters: {msg: `Failed to restart Travis build ${this.buildId}: `}}}
+        onSuccess: {kind: "respond", name: "GenericSuccessHandler", parameters: {msg: `Successfully restarted Travis build ${this.buildId}`}},
+        onError: {kind: "respond", name: "GenericErrorHandler", parameters: {msg: `Failed to restart Travis build ${this.buildId}: `}}}
         plan.add(execute)
         return plan;
     }
