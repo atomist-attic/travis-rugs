@@ -3,7 +3,7 @@ import { GraphNode, Match, PathExpression } from '@atomist/rug/tree/PathExpressi
 import { EventHandler, Tags } from '@atomist/rug/operations/Decorators'
 
 
-@EventHandler("TravisBuilds", "Handle build events", 
+@EventHandler("TravisBuilds", "Handle build events",
     new PathExpression<GraphNode, GraphNode>(
         `/Build
             [/hasBuild::Commit()/author::GitHubId()
@@ -38,9 +38,9 @@ class Built implements HandleEvent<GraphNode, GraphNode> {
             message.addAction({
                 label: 'Release',
                 instruction: {
-                    kind: "command", 
-                    name: "CreateGithubRelease", 
-                    parameters: { 
+                    kind: "command",
+                    name: "CreateGithubRelease",
+                    parameters: {
                         owner: build.on().owner(),
                         repo: build.on().name()
                     }
@@ -56,23 +56,23 @@ class Built implements HandleEvent<GraphNode, GraphNode> {
             message.addAction({
                 label: 'Restart',
                 instruction: {
-                    kind: "command", 
-                    name: "RestartTravisBuild", 
-                    parameters: { 
+                    kind: "command",
+                    name: "RestartTravisBuild",
+                    parameters: {
                         buildId: build.id(),
                         org: build.on().owner()
                     }
                 }
             })
         }
-        
+
         return message
     }
 }
 export const built = new Built()
 
 
-@EventHandler("travis-build-prs", "Handle build events from pull-requests", 
+@EventHandler("TravisBuildsPrs", "Handle build events from pull-requests", 
     new PathExpression<GraphNode, GraphNode>(
         `/Build
             [/on::Repo()/channel::ChatChannel()]
@@ -96,9 +96,9 @@ class PRBuild implements HandleEvent<GraphNode, GraphNode> {
             message.addAction({
                 label: 'Release',
                 instruction: {
-                    kind: "command", 
-                    name: "CreateGithubRelease", 
-                    parameters: { 
+                    kind: "command",
+                    name: "CreateGithubRelease",
+                    parameters: {
                         owner: build.on().owner(),
                         repo: build.on().name()
                     }
@@ -109,16 +109,16 @@ class PRBuild implements HandleEvent<GraphNode, GraphNode> {
             message.addAction({
                 label: 'Restart',
                 instruction: {
-                    kind: "command", 
-                    name: "RestartTravisBuild", 
-                    parameters: { 
+                    kind: "command",
+                    name: "RestartTravisBuild",
+                    parameters: {
                         buildId: build.id(),
                         org: build.on().owner()
                     }
                 }
             })
         }
-        
+
         return message
     }
 }
