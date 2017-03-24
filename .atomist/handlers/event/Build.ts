@@ -3,7 +3,7 @@ import { GraphNode, Match, PathExpression } from '@atomist/rug/tree/PathExpressi
 import { EventHandler, Tags } from '@atomist/rug/operations/Decorators'
 
 
-@EventHandler("travis-builds", "Handle build events", 
+@EventHandler("TravisBuilds", "Handle build events", 
     new PathExpression<GraphNode, GraphNode>(
         `/Build
             [/hasBuild::Commit()/author::GitHubId()
@@ -39,7 +39,7 @@ class Built implements HandleEvent<GraphNode, GraphNode> {
                 label: 'Release',
                 instruction: {
                     kind: "command", 
-                    name: "create-github-release", 
+                    name: "CreateGithubRelease", 
                     parameters: { 
                         owner: build.on().owner(),
                         repo: build.on().name()
@@ -57,7 +57,7 @@ class Built implements HandleEvent<GraphNode, GraphNode> {
                 label: 'Restart',
                 instruction: {
                     kind: "command", 
-                    name: "restart-travis-build", 
+                    name: "RestartTravisBuild", 
                     parameters: { 
                         buildId: build.id(),
                         org: build.on().owner()
@@ -97,7 +97,7 @@ class PRBuild implements HandleEvent<GraphNode, GraphNode> {
                 label: 'Release',
                 instruction: {
                     kind: "command", 
-                    name: "create-github-release", 
+                    name: "CreateGithubRelease", 
                     parameters: { 
                         owner: build.on().owner(),
                         repo: build.on().name()
@@ -110,7 +110,7 @@ class PRBuild implements HandleEvent<GraphNode, GraphNode> {
                 label: 'Restart',
                 instruction: {
                     kind: "command", 
-                    name: "restart-travis-build", 
+                    name: "RestartTravisBuild", 
                     parameters: { 
                         buildId: build.id(),
                         org: build.on().owner()
