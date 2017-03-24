@@ -100,7 +100,8 @@ class PRBuild implements HandleEvent<GraphNode, GraphNode> {
                     name: "CreateGithubRelease", 
                     parameters: { 
                         owner: build.on().owner(),
-                        repo: build.on().name()
+                        repo: build.on().name(),
+                        tag: build.hasBuild().isTagged()[0].ref()
                     }
                 }
             })
