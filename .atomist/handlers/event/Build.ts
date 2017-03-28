@@ -6,9 +6,8 @@ import { EventHandler, Tags } from '@atomist/rug/operations/Decorators'
 @EventHandler("TravisBuilds", "Handle build events",
     new PathExpression<GraphNode, GraphNode>(
         `/Build
-            [/hasBuild::Commit()
-                [/author::GitHubId()[/hasGithubIdentity::Person()/hasChatIdentity::ChatId()]?]
-                [/isTagged::Tag()]?]
+            [/hasBuild::Commit()/author::GitHubId()
+                [/hasGithubIdentity::Person()/hasChatIdentity::ChatId()]?]
             [/on::Repo()/channel::ChatChannel()]
             [/triggeredBy::Push()
                 [/contains::Commit()/author::GitHubId()
