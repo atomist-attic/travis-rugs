@@ -1,6 +1,8 @@
 group: "atomist-rugs"
 artifact: "travis-handlers"
-version: "0.3.3"
-requires: "0.17.3"
+version: "0.4.0"
+requires: "0.18.0"
+dependencies:
+  - "atomist-rugs:github-handlers:0.18.7"
 extensions:
   - "com.atomist.rug:rug-functions-travis:0.4.0"
