@@ -35,11 +35,12 @@ class Built implements HandleEvent<GraphNode, GraphNode> {
                     message.channelId = build.hasBuild().author().hasGitHubIdentity().hasChatIdentity().id()
                 }
             }
+            console.log(">>>>>>>>>>>>>>>>>>>>>>> in the right branch")
             message.addAction({
                 label: 'Release',
                 instruction: {
                     kind: "command",
-                    name: "CreateGithubRelease",
+                    name: "atomist-rugs:github-handlers:CreateGithubRelease",
                     parameters: {
                         owner: build.on().owner(),
                         repo: build.on().name()
