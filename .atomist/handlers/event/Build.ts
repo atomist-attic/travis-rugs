@@ -3,15 +3,15 @@ import { GraphNode, Match, PathExpression } from '@atomist/rug/tree/PathExpressi
 import { EventHandler, Tags } from '@atomist/rug/operations/Decorators'
 
 import { Build } from '@atomist/cortex/Build'
+import { Tag } from '@atomist/cortex/Tag'
 
 @EventHandler("TravisBuilds", "Handle build events",
     new PathExpression<Build, Build>(
         `/Build
             [@platform='travis']
-            [/hasBuild::Commit()
-                [/author::GitHubId()[/hasGithubIdentity::Person()/hasChatIdentity::ChatId()]?]
+            [/hasBuild::Commit()[/author::GitHubId()[/hasGithubIdentity::Person()/hasChatIdentity::ChatId()]?]
                 [/isTagged::Tag()]?]
-            [/on::Repo()/channel::ChatChannel()]
+                [/on::Repo()/channel::ChatChannel()]
             [/triggeredBy::Push()
                 [/contains::Commit()/author::GitHubId()
                     [/hasGithubIdentity::Person()/hasChatIdentity::ChatId()]?]
@@ -26,39 +26,59 @@ class Built implements HandleEvent<Build, Build> {
         message.withNode(build)
 
         let repo = build.on().name()
+        let owner = build.on().owner()
         let cid = "commit_event/" + build.on().owner() + "/" + repo + "/" + build.ofCommit().sha()
         message.withCorrelationId(cid)
 
         // TODO split this into two handlers with proper tree expressions with predicates
         if (build.status() == "Passed" || build.status() == "Fixed") {
-            console.log(JSON.stringify(build.ofCommit().author().of().hasChatIdentity().id()))
-            if (build.status() == "Fixed") {
-                if (build.ofCommit().author() != null && build.ofCommit().author().of() != null) {
+            try {
+               if (build.status() == "Fixed" && build.ofCommit().author() != null && build.ofCommit().author().of() != null) {
                     let dmMessage = new Message()
-                    dmMessage.body = `Travis CI build ${build.name()} of repo ${repo} is now fixed`
+                    dmMessage.body = `Travis CI build \`#${build.name()}\` of \`${owner}/${repo}\` is now fixed`
                     dmMessage.channelId = build.ofCommit().author().of().hasChatIdentity().id()
                     plan.add(dmMessage)
                 }
             }
-            message.addAction({
-                label: 'Release',
-                instruction: {
-                    kind: "command",
-                    name: { group: "atomist-rugs", artifact: "github-handlers", name: "CreateGitHubRelease" },
-                    parameters: {
-                        owner: build.on().owner(),
-                        repo: build.on().name()
-                    }
+            catch (e) {
+                console.log((<Error>e).message)
+            }
+            // TODO cd this is impossible to write; there seems to be a bug in Cortex/Rug where this is expected to be
+            // wrapped in a Tag[]
+            try {
+                let tag = build.ofCommit().isTagged() as any
+                if (tag) {
+                    message.addAction({
+                        label: 'Release',
+                        instruction: {
+                            kind: "command",
+                            name: { group: "atomist-rugs", artifact: "github-handlers", name: "CreateGitHubRelease" },
+                            parameters: {
+                                owner: build.on().owner(),
+                                repo: build.on().name(),
+                                tag: tag.name(),
+                                message: "Release created by TravisBuilds"
+                            }
+                        }
+                    })
                 }
-            })
+            }
+            catch (e) {
+                console.log((<Error>e).message)
+            }
         }
         else if (build.status() == "Failed" || build.status() == "Broken" || build.status() == "Still Failing") {
-            if (build.ofCommit().author() != null && build.ofCommit().author().of() != null) {
-                let dmMessage = new Message()
-                let commit = "`" + build.ofCommit().sha() + "`"
-                dmMessage.body = `Travis CI build ${build.name()} of repo ${repo} failed after your last commit ${commit}: ${build.buildUrl()}`
-                dmMessage.channelId = build.ofCommit().author().of().hasChatIdentity().id()
-                plan.add(dmMessage)
+            try {
+                if (build.ofCommit().author() != null && build.ofCommit().author().of() != null) {
+                    let dmMessage = new Message()
+                    let commit = "`" + build.ofCommit().sha() + "`"
+                    dmMessage.body = `Travis CI build \`#${build.name()}\` of \`${owner}/${repo}\` failed after your last commit ${commit}: ${build.buildUrl()}`
+                    dmMessage.channelId = build.ofCommit().author().of().hasChatIdentity().id()
+                    plan.add(dmMessage)
+                }
+            }
+            catch (e) {
+                console.log((<Error>e).message)
             }
             message.addAction({
                 label: 'Restart',
@@ -82,6 +102,7 @@ export const built = new Built()
 @EventHandler("TravisBuildsPrs", "Handle build events from pull-requests", 
     new PathExpression<Build, Build>(
         `/Build
+            [@platform='travis']
             [/on::Repo()/channel::ChatChannel()]
             [/triggeredBy::PullRequest()
                 [/author::GitHubId()[/hasGithubIdentity::Person()/hasChatIdentity::ChatId()]?]
