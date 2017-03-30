@@ -2,6 +2,7 @@
   "dependencies": {
     "@atomist/rug": "^0.20.0",
     "@atomist/cortex": "^0.20.0",
+    "@atomist/rugs": "^0.0.13",
     "mustache": "^2.3.0"
   },
   "devDependencies": {
