@@ -79,9 +79,9 @@ export class TravisBuildRug implements HandleCommand {
 }
 
 export const travisBuildRug = new TravisBuildRug();
-@ResponseHandler("GenericErrorHandler", "Displays an error in chat")
+@ResponseHandler("BuildStartError", "Displays an error in chat")
 @Tags("errors")
-class GenericErrorHandler implements HandleResponse<any> {
+class BuildStartErrorHandler implements HandleResponse<any> {
 
     @Parameter({ description: "Error message", pattern: "@any", required: true })
     msg: string
@@ -91,11 +91,11 @@ class GenericErrorHandler implements HandleResponse<any> {
     }
 }
 
-export const genericErrorHandler = new GenericErrorHandler();
+export const buildStartErrorHandler = new BuildStartErrorHandler();
 
-@ResponseHandler("GenericSuccessHandler", "Displays a success message in chat")
+@ResponseHandler("BuildStartSuccess", "Displays a success message in chat")
 @Tags("success")
-class GenericSuccessHandler implements HandleResponse<any> {
+class BuildStartSuccessHandler implements HandleResponse<any> {
 
     @Parameter({ description: "Success msg", pattern: "@any" })
     msg: string
@@ -105,4 +105,4 @@ class GenericSuccessHandler implements HandleResponse<any> {
     }
 }
 
-export const genericSuccessHandler = new GenericSuccessHandler();
+export const buildStartSuccessHandler = new BuildStartSuccessHandler();
