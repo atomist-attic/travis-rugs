@@ -1,13 +1,14 @@
 import { HandleCommand, HandlerContext, Message, Plan, Respondable, Execute, MappedParameters, HandleResponse, Response } from '@atomist/rug/operations/Handlers';
 import { CommandHandler, Parameter, Tags, Intent, MappedParameter, Secrets, ResponseHandler } from '@atomist/rug/operations/Decorators';
 import { Pattern } from '@atomist/rug/operations/RugOperation';
+import { wrap } from '@atomist/rugs/operations/CommonHandlers';
 
 /**
  * A command handler to trigger build of a Rug archive on Travis CI.
  */
 @CommandHandler("TravisBuildRug", "command handler to trigger build of a Rug archive on Travis CI")
-@Tags("documentation")
-@Intent("build rug")
+@Tags("travis-ci", "rug")
+@Intent("publish rug")
 @Secrets(
     "secret://team?path=travis_token",
     "secret://team?path=maven_base_url",
@@ -26,7 +27,7 @@ export class TravisBuildRug implements HandleCommand {
         maxLength: 100,
         required: true
     })
-    version: string; // version of Rug archive to publish
+    version: string;
 
     @Parameter({
         displayName: "Git Reference",
@@ -61,48 +62,11 @@ export class TravisBuildRug implements HandleCommand {
                 kind: "execute",
                 name: "travis-build-rug",
                 parameters: this
-            },
-            onSuccess: {
-                kind: "respond",
-                name: "BuildStartSuccessHandler",
-                parameters: { msg: `Successfully started ${msgTail}` }
-            },
-            onError: {
-                kind: "respond",
-                name: "BuildStartErrorHandler",
-                parameters: { msg: `Failed to start ${msgTail}` }
             }
         };
-        plan.add(execute);
+        plan.add(wrap(execute, `Successfully started ${msgTail}`, this));
         return plan;
     }
 }
 
 export const travisBuildRug = new TravisBuildRug();
-@ResponseHandler("BuildStartErrorHandler", "Displays an error in chat")
-@Tags("errors")
-class BuildStartErrorHandler implements HandleResponse<any> {
-
-    @Parameter({ description: "Error message", pattern: "@any", required: true })
-    msg: string
-
-    handle(response: Response<any>): Message {
-        return new Message(this.msg);
-    }
-}
-
-export const buildStartErrorHandler = new BuildStartErrorHandler();
-
-@ResponseHandler("BuildStartSuccessHandler", "Displays a success message in chat")
-@Tags("success")
-class BuildStartSuccessHandler implements HandleResponse<any> {
-
-    @Parameter({ description: "Success msg", pattern: "@any" })
-    msg: string
-
-    handle(response: Response<any>): Message {
-        return new Message(this.msg);
-    }
-}
-
-export const buildStartSuccessHandler = new BuildStartSuccessHandler();

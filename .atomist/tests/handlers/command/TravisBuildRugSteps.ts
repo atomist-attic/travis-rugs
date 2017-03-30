@@ -1,5 +1,5 @@
 import { Given, When, Then, HandlerScenarioWorld, CommandHandlerScenarioWorld } from "@atomist/rug/test/handler/Core"
-import { Execute } from "@atomist/rug/operations/Handlers"
+import { Execute, Respondable } from "@atomist/rug/operations/Handlers"
 
 Given("nothing", f => { });
 
@@ -34,8 +34,8 @@ Then("the plan contains a starting message", (world: HandlerScenarioWorld) => {
 
 Then("the plan contains a call to the Travis build function", (world: HandlerScenarioWorld) => {
     let w: CommandHandlerScenarioWorld = world as CommandHandlerScenarioWorld;
-    const instruction = w.plan().instructions[0] as Execute;
-    console.log(`instruction.name:${instruction.name}`);
-    //return instruction.name == "TravisRugBuild";
-    return true;
+    const respondable = w.plan().instructions[0] as Respondable<Execute>;
+    const instruction = respondable.instruction as Execute;
+    const name = instruction.name as string;
+    return name == "travis-build-rug";
 });

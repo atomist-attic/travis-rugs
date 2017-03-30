@@ -1,9 +1,9 @@
-import { HandleEvent, Message, Plan } from '@atomist/rug/operations/Handlers'
-import { GraphNode, Match, PathExpression } from '@atomist/rug/tree/PathExpression'
-import { EventHandler, Tags } from '@atomist/rug/operations/Decorators'
+import { HandleEvent, Message, Plan } from '@atomist/rug/operations/Handlers';
+import { GraphNode, Match, PathExpression } from '@atomist/rug/tree/PathExpression';
+import { EventHandler, Tags } from '@atomist/rug/operations/Decorators';
 
-import { Build } from '@atomist/cortex/Build'
-import { Tag } from '@atomist/cortex/Tag'
+import { Build } from '@atomist/cortex/Build';
+import { Tag } from '@atomist/cortex/Tag';
 
 @EventHandler("TravisBuilds", "Handle build events",
     new PathExpression<Build, Build>(
@@ -33,7 +33,7 @@ class Built implements HandleEvent<Build, Build> {
         // TODO split this into two handlers with proper tree expressions with predicates
         if (build.status() == "Passed" || build.status() == "Fixed") {
             try {
-               if (build.status() == "Fixed" && build.ofCommit().author() != null && build.ofCommit().author().of() != null) {
+                if (build.status() == "Fixed" && build.ofCommit().author() != null && build.ofCommit().author().of() != null) {
                     let dmMessage = new Message()
                     dmMessage.body = `Travis CI build \`#${build.name()}\` of \`${owner}/${repo}\` is now fixed`
                     dmMessage.channelId = build.ofCommit().author().of().hasChatIdentity().id()
@@ -99,7 +99,7 @@ class Built implements HandleEvent<Build, Build> {
 export const built = new Built()
 
 
-@EventHandler("TravisBuildsPrs", "Handle build events from pull-requests", 
+@EventHandler("TravisBuildsPrs", "Handle build events from pull-requests",
     new PathExpression<Build, Build>(
         `/Build
             [@platform='travis']
@@ -110,7 +110,7 @@ export const built = new Built()
                 [/on::Repo()]]`))
 @Tags("ci", "travis")
 class PRBuild implements HandleEvent<Build, Build> {
-    handle(event: Match<Build, Build>): Message {
+    handle(event: Match<Build, Build>): Plan {
         let build = event.root() as any
 
         let message = new Message()
@@ -147,7 +147,8 @@ class PRBuild implements HandleEvent<Build, Build> {
             })
         }
 
-        return message
+        return Plan.ofMessage(message);
     }
 }
-export const prBuilt = new PRBuild()
+
+export const prBuilt = new PRBuild();
