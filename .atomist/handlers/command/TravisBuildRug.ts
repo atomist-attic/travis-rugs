@@ -64,12 +64,12 @@ export class TravisBuildRug implements HandleCommand {
             },
             onSuccess: {
                 kind: "respond",
-                name: "BuildStartSuccess",
+                name: "GenericSuccessHandler",
                 parameters: { msg: `Successfully started ${msgTail}` }
             },
             onError: {
                 kind: "respond",
-                name: "BuildStartError",
+                name: "GenericErrorHandler",
                 parameters: { msg: `Failed to start ${msgTail}` }
             }
         };
