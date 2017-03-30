@@ -1,0 +1,124 @@
+import { HandleCommand, HandlerContext, Message, Plan, Respondable, Execute, MappedParameters, HandleResponse, Response } from '@atomist/rug/operations/Handlers';
+import { CommandHandler, Parameter, Tags, Intent, MappedParameter, Secrets, ResponseHandler } from '@atomist/rug/operations/Decorators';
+import { Pattern } from '@atomist/rug/operations/RugOperation';
+
+/**
+ * A command handler to trigger build of a Rug archive on Travis CI.
+ */
+@CommandHandler("TravisBuildRug", "command handler to trigger build of a Rug archive on Travis CI")
+@Tags("documentation")
+@Intent("travis build")
+@Secrets(
+    "secret://team?path=travis_token",
+    "secret://team?path=maven_base_url",
+    "secret://team?path=maven_user",
+    "secret://team?path=maven_token",
+    "github://user_token?scopes=repo"
+)
+export class TravisBuildRug implements HandleCommand {
+
+    @Parameter({
+        displayName: "Repo Owner",
+        description: "user or organization that owns the GitHub repo",
+        pattern: Pattern.project_name,
+        validInput: "a valid GitHub user or organization",
+        minLength: 1,
+        maxLength: 100,
+        required: true
+    })
+    owner: string;
+
+    @Parameter({
+        displayName: "Repo Name",
+        description: "name of GitHub repo",
+        pattern: Pattern.project_name,
+        validInput: "a valid GitHub repo, do not include repo owner",
+        minLength: 1,
+        maxLength: 100,
+        required: true
+    })
+    repo: string;
+
+    @Parameter({
+        displayName: "Version",
+        description: "version of Rug archive to publish",
+        pattern: Pattern.semantic_version,
+        validInput: "a semantic version, it must be unique",
+        minLength: 5,
+        maxLength: 100,
+        required: true
+    })
+    version: string; // version of Rug archive to publish
+
+    @Parameter({
+        displayName: "Git Reference",
+        description: "branch, tag, or commit to checkout and build",
+        pattern: Pattern.project_name,
+        validInput: "a valid Git reference",
+        minLength: 1,
+        maxLength: 100,
+        required: false
+    })
+    gitRef: string = "master";
+
+    @MappedParameter(MappedParameters.SLACK_TEAM)
+    teamId: string;
+
+    handle(command: HandlerContext): Plan {
+        let plan: Plan = new Plan();
+
+        const msgTail = `Travis CI build for Rug project ${this.owner}/${this.repo}`;
+
+        let message: Message = new Message(`Starting ${msgTail}`);
+        plan.add(message);
+
+        let execute: Respondable<Execute> = {
+            instruction: {
+                kind: "execute",
+                name: "travis-build-rug",
+                parameters: this
+            },
+            onSuccess: {
+                kind: "respond",
+                name: "BuildStartSuccess",
+                parameters: { msg: `Successfully started ${msgTail}` }
+            },
+            onError: {
+                kind: "respond",
+                name: "BuildStartError",
+                parameters: { msg: `Failed to start ${msgTail}` }
+            }
+        };
+        plan.add(execute);
+        return plan;
+    }
+}
+
+export const travisBuildRug = new TravisBuildRug();
+@ResponseHandler("GenericErrorHandler", "Displays an error in chat")
+@Tags("errors")
+class GenericErrorHandler implements HandleResponse<any> {
+
+    @Parameter({ description: "Error message", pattern: "@any", required: true })
+    msg: string
+
+    handle(response: Response<any>): Message {
+        return new Message(this.msg);
+    }
+}
+
+export const genericErrorHandler = new GenericErrorHandler();
+
+@ResponseHandler("GenericSuccessHandler", "Displays a success message in chat")
+@Tags("success")
+class GenericSuccessHandler implements HandleResponse<any> {
+
+    @Parameter({ description: "Success msg", pattern: "@any" })
+    msg: string
+
+    handle(response: Response<any>): Message {
+        return new Message(this.msg);
+    }
+}
+
+export const genericSuccessHandler = new GenericSuccessHandler();

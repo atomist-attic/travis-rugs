@@ -1,10 +1,10 @@
 {
-    "dependencies": {
-        "@atomist/rugs": "^0.0.11",
-        "@atomist/github": "0.2.0",
-        "mustache": "^2.3.0"
-    },
-    "devDependencies": {
-      "@types/mustache": "^0.8.29"
-    }
+  "dependencies": {
+    "@atomist/rug": "^0.20.0",
+    "@atomist/cortex": "^0.20.0",
+    "mustache": "^2.3.0"
+  },
+  "devDependencies": {
+    "@types/mustache": "^0.8.29"
+  }
 }
