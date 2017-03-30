@@ -64,12 +64,12 @@ export class TravisBuildRug implements HandleCommand {
             },
             onSuccess: {
                 kind: "respond",
-                name: "GenericSuccessHandler",
+                name: "BuildStartSuccessHandler",
                 parameters: { msg: `Successfully started ${msgTail}` }
             },
             onError: {
                 kind: "respond",
-                name: "GenericErrorHandler",
+                name: "BuildStartErrorHandler",
                 parameters: { msg: `Failed to start ${msgTail}` }
             }
         };
@@ -79,7 +79,7 @@ export class TravisBuildRug implements HandleCommand {
 }
 
 export const travisBuildRug = new TravisBuildRug();
-@ResponseHandler("BuildStartError", "Displays an error in chat")
+@ResponseHandler("BuildStartErrorHandler", "Displays an error in chat")
 @Tags("errors")
 class BuildStartErrorHandler implements HandleResponse<any> {
 
@@ -93,7 +93,7 @@ class BuildStartErrorHandler implements HandleResponse<any> {
 
 export const buildStartErrorHandler = new BuildStartErrorHandler();
 
-@ResponseHandler("BuildStartSuccess", "Displays a success message in chat")
+@ResponseHandler("BuildStartSuccessHandler", "Displays a success message in chat")
 @Tags("success")
 class BuildStartSuccessHandler implements HandleResponse<any> {
 
