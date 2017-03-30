@@ -18,28 +18,6 @@ import { Pattern } from '@atomist/rug/operations/RugOperation';
 export class TravisBuildRug implements HandleCommand {
 
     @Parameter({
-        displayName: "Repo Owner",
-        description: "user or organization that owns the GitHub repo",
-        pattern: Pattern.project_name,
-        validInput: "a valid GitHub user or organization",
-        minLength: 1,
-        maxLength: 100,
-        required: true
-    })
-    owner: string;
-
-    @Parameter({
-        displayName: "Repo Name",
-        description: "name of GitHub repo",
-        pattern: Pattern.project_name,
-        validInput: "a valid GitHub repo, do not include repo owner",
-        minLength: 1,
-        maxLength: 100,
-        required: true
-    })
-    repo: string;
-
-    @Parameter({
         displayName: "Version",
         description: "version of Rug archive to publish",
         pattern: Pattern.semantic_version,
@@ -60,6 +38,12 @@ export class TravisBuildRug implements HandleCommand {
         required: false
     })
     gitRef: string = "master";
+
+    @MappedParameter(MappedParameters.GITHUB_REPOSITORY)
+    repo: string;
+
+    @MappedParameter(MappedParameters.GITHUB_REPO_OWNER)
+    owner: string;
 
     @MappedParameter(MappedParameters.SLACK_TEAM)
     teamId: string;
