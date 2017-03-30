@@ -7,7 +7,7 @@ import { Pattern } from '@atomist/rug/operations/RugOperation';
  */
 @CommandHandler("TravisBuildRug", "command handler to trigger build of a Rug archive on Travis CI")
 @Tags("documentation")
-@Intent("travis build")
+@Intent("build rug")
 @Secrets(
     "secret://team?path=travis_token",
     "secret://team?path=maven_base_url",
