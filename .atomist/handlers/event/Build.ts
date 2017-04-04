@@ -46,8 +46,8 @@ class Built implements HandleEvent<Build, Build> {
             // TODO cd this is impossible to write; there seems to be a bug in Cortex/Rug where this is expected to be
             // wrapped in a Tag[]
             try {
-                let tag = build.ofCommit().isTagged() as any
-                if (tag) {
+                let tag = build.ofCommit().isTagged()
+                if (tag.length > 0) {
                     message.addAction({
                         label: 'Release',
                         instruction: {
@@ -56,7 +56,7 @@ class Built implements HandleEvent<Build, Build> {
                             parameters: {
                                 owner: build.on().owner(),
                                 repo: build.on().name(),
-                                tag: tag.name(),
+                                tag: tag[0].name(),
                                 message: "Release created by TravisBuilds"
                             }
                         }
