@@ -116,7 +116,7 @@ class PRBuild implements HandleEvent<Build, Build> {
         let message = new Message()
         message.withNode(build)
 
-        let cid = "commit_event/" + build.on().owner() + "/" + build.on().name() + "/" + build.triggerdBy().contains().sha()
+        let cid = "commit_event/" + build.on().owner() + "/" + build.on().name() + "/" + build.triggeredBy().contains().sha()
         message.withCorrelationId(cid)
 
         // TODO split this into two handlers with proper tree expressions with predicates
