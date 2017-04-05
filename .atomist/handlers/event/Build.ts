@@ -128,7 +128,8 @@ class PRBuild implements HandleEvent<Build, Build> {
                     name: { group: "atomist-rugs", artifact: "github-handlers", name: "CreateGitHubRelease" },
                     parameters: {
                         owner: build.on().owner(),
-                        repo: build.on().name()
+                        repo: build.on().name(),
+                        tag: build.hasBuild().isTagged()[0].ref()
                     }
                 }
             })
