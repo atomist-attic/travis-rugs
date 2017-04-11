@@ -1,4 +1,4 @@
-import { HandleResponse, Execute, Respondable, MappedParameters, HandleCommand, Respond, Response, HandlerContext, Plan, Message } from '@atomist/rug/operations/Handlers'
+import { HandleResponse, Execute, Respondable, MappedParameters, HandleCommand, Respond, Response, HandlerContext, Plan } from '@atomist/rug/operations/Handlers'
 import { ResponseHandler, ParseJson, CommandHandler, Secrets, MappedParameter, Parameter, Tags, Intent } from '@atomist/rug/operations/Decorators'
 import { wrap } from '@atomist/rugs/operations/CommonHandlers';
 

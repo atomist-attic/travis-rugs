@@ -1,4 +1,4 @@
-import { HandleCommand, HandlerContext, Message, Plan, Respondable, Execute, MappedParameters, HandleResponse, Response } from '@atomist/rug/operations/Handlers';
+import { HandleCommand, HandlerContext, Plan, Respondable, Execute, MappedParameters, HandleResponse, Response, ResponseMessage } from '@atomist/rug/operations/Handlers';
 import { CommandHandler, Parameter, Tags, Intent, MappedParameter, Secrets, ResponseHandler } from '@atomist/rug/operations/Decorators';
 import { Pattern } from '@atomist/rug/operations/RugOperation';
 import { wrap } from '@atomist/rugs/operations/CommonHandlers';
@@ -54,7 +54,7 @@ export class TravisBuildRug implements HandleCommand {
 
         const msgTail = `Travis CI build for Rug project ${this.owner}/${this.repo}`;
 
-        let message: Message = new Message(`Starting ${msgTail}`);
+        let message: ResponseMessage = new ResponseMessage(`Starting ${msgTail}`);
         plan.add(message);
 
         let execute: Respondable<Execute> = {

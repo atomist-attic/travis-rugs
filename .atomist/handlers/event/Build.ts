@@ -1,4 +1,4 @@
-import { HandleEvent, Message, Plan } from '@atomist/rug/operations/Handlers';
+import { HandleEvent, Plan, DirectedMessage, LifecycleMessage, UserAddress } from '@atomist/rug/operations/Handlers';
 import { GraphNode, Match, PathExpression } from '@atomist/rug/tree/PathExpression';
 import { EventHandler, Tags } from '@atomist/rug/operations/Decorators';
 
@@ -8,45 +8,30 @@ import { Tag } from '@atomist/cortex/Tag';
 @EventHandler("TravisBuilds", "Handle build events",
     new PathExpression<Build, Build>(
         `/Build
-            [@platform='travis']
-            [/hasBuild::Commit()[/author::GitHubId()[/hasGithubIdentity::Person()/hasChatIdentity::ChatId()]?]
-                [/isTagged::Tag()]?]
-                [/on::Repo()/channel::ChatChannel()]
-            [/triggeredBy::Push()
-                [/contains::Commit()/author::GitHubId()
-                    [/hasGithubIdentity::Person()/hasChatIdentity::ChatId()]?]
-                [/on::Repo()]]`))
+            [@provider='travis']
+            [/commit::Commit()[/author::GitHubId()[/person::Person()/chatId::ChatId()]?]
+                [/tags::Tag()]?]
+                [/repo::Repo()/channels::ChatChannel()]
+            [/push::Push()
+                [/commits::Commit()/author::GitHubId()
+                    [/person::Person()/chatId::ChatId()]?]
+                [/repo::Repo()]]`))
 @Tags("ci", "travis")
 class Built implements HandleEvent<Build, Build> {
     handle(event: Match<Build, Build>): Plan {
         let build = event.root()
         let plan = new Plan()
 
-        let message = new Message()
-        message.withNode(build)
-
-        let repo = build.on().name()
-        let owner = build.on().owner()
-        let cid = "commit_event/" + build.on().owner() + "/" + repo + "/" + build.ofCommit().sha()
-        message.withCorrelationId(cid)
+        let repo = build.repo.name
+        let owner = build.repo.owner
+        let cid = "commit_event/" + owner + "/" + repo + "/" + build.commit.sha
+        
+        let message = new LifecycleMessage(build, cid)
 
         // TODO split this into two handlers with proper tree expressions with predicates
-        if (build.status() == "Passed" || build.status() == "Fixed") {
+        if (build.status == "passed") {
             try {
-                if (build.status() == "Fixed" && build.ofCommit().author() != null && build.ofCommit().author().of() != null) {
-                    let dmMessage = new Message()
-                    dmMessage.body = `Travis CI build \`#${build.name()}\` of \`${owner}/${repo}\` is now fixed`
-                    dmMessage.channelId = build.ofCommit().author().of().hasChatIdentity().id()
-                    plan.add(dmMessage)
-                }
-            }
-            catch (e) {
-                console.log((<Error>e).message)
-            }
-            // TODO cd this is impossible to write; there seems to be a bug in Cortex/Rug where this is expected to be
-            // wrapped in a Tag[]
-            try {
-                let tag = build.ofCommit().isTagged()
+                let tag = build.commit.tags
                 if (tag.length > 0) {
                     message.addAction({
                         label: 'Release',
@@ -54,9 +39,9 @@ class Built implements HandleEvent<Build, Build> {
                             kind: "command",
                             name: { group: "atomist-rugs", artifact: "github-handlers", name: "CreateGitHubRelease" },
                             parameters: {
-                                owner: build.on().owner(),
-                                repo: build.on().name(),
-                                tag: tag[0].name(),
+                                owner: build.repo.owner,
+                                repo: build.repo.name,
+                                tag: tag[0].name,
                                 message: "Release created by TravisBuilds"
                             }
                         }
@@ -67,14 +52,12 @@ class Built implements HandleEvent<Build, Build> {
                 console.log((<Error>e).message)
             }
         }
-        else if (build.status() == "Failed" || build.status() == "Broken" || build.status() == "Still Failing") {
+        else if (build.status == "failed" || build.status == "broken") {
             try {
-                if (build.ofCommit().author() != null && build.ofCommit().author().of() != null) {
-                    let dmMessage = new Message()
-                    let commit = "`" + build.ofCommit().sha() + "`"
-                    dmMessage.body = `Travis CI build \`#${build.name()}\` of \`${owner}/${repo}\` failed after your last commit ${commit}: ${build.buildUrl()}`
-                    dmMessage.channelId = build.ofCommit().author().of().hasChatIdentity().id()
-                    plan.add(dmMessage)
+                if (build.commit.author != null && build.commit.author.person != null) {
+                    let body = `Travis CI build \`#${build.name}\` of \`${owner}/${repo}\` failed after your last commit \`${build.commit.sha}\`: ${build.buildUrl}`
+                    let address = new UserAddress(build.commit.author.person.chatId.id)
+                    plan.add(new DirectedMessage(body, address))
                 }
             }
             catch (e) {
@@ -86,8 +69,8 @@ class Built implements HandleEvent<Build, Build> {
                     kind: "command",
                     name: "RestartTravisBuild",
                     parameters: {
-                        buildId: build.id(),
-                        org: build.on().owner()
+                        buildId: build.id,
+                        org: build.repo.owner
                     }
                 }
             })
@@ -102,46 +85,44 @@ export const built = new Built()
 @EventHandler("TravisBuildsPrs", "Handle build events from pull-requests",
     new PathExpression<Build, Build>(
         `/Build
-            [@platform='travis']
-            [/on::Repo()/channel::ChatChannel()]
-            [/triggeredBy::PullRequest()
-                [/author::GitHubId()[/hasGithubIdentity::Person()/hasChatIdentity::ChatId()]?]
-                [/contains::Commit()/author::GitHubId()[/hasGithubIdentity::Person()/hasChatIdentity::ChatId()]?]
-                [/on::Repo()]]`))
+            [@provider='travis']
+            [/repo::Repo()/channels::ChatChannel()]
+            [/commit::Commit()]
+            [/pullRequest::PullRequest()
+                [/author::GitHubId()[/person::Person()/chatId::ChatId()]?]
+                [/commits::Commit()/author::GitHubId()[/person::Person()/chatId::ChatId()]?]
+                [/repo::Repo()]]`))
 @Tags("ci", "travis")
 class PRBuild implements HandleEvent<Build, Build> {
     handle(event: Match<Build, Build>): Plan {
-        let build = event.root() as any
-
-        let message = new Message()
-        message.withNode(build)
-
-        let cid = "commit_event/" + build.on().owner() + "/" + build.on().name() + "/" + build.triggeredBy().contains().sha()
-        message.withCorrelationId(cid)
-
+        let build = event.root()
+    
+        let cid = "commit_event/" + build.repo.owner + "/" + build.repo.name + "/" + build.commit.sha
+        let message = new LifecycleMessage(build, cid)
+        
         // TODO split this into two handlers with proper tree expressions with predicates
-        if (build.status() == "Passed" || build.status() == "Fixed") {
+        if (build.status == "passed") {
             message.addAction({
                 label: 'Release',
                 instruction: {
                     kind: "command",
                     name: { group: "atomist-rugs", artifact: "github-handlers", name: "CreateGitHubRelease" },
                     parameters: {
-                        owner: build.on().owner(),
-                        repo: build.on().name()
+                        owner: build.repo.owner,
+                        repo: build.repo.name
                     }
                 }
             })
         }
-        else if (build.status() == "Failed" || build.status() == "Broken" || build.status() == "Still Failing") {
+        else if (build.status == "failed" || build.status == "broken") {
             message.addAction({
                 label: 'Restart',
                 instruction: {
                     kind: "command",
                     name: "RestartTravisBuild",
                     parameters: {
-                        buildId: build.id(),
-                        org: build.on().owner()
+                        buildId: build.id,
+                        org: build.repo.owner
                     }
                 }
             })

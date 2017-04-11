@@ -1,5 +1,5 @@
 import { Given, When, Then, HandlerScenarioWorld, CommandHandlerScenarioWorld } from "@atomist/rug/test/handler/Core"
-import { Execute, Respondable } from "@atomist/rug/operations/Handlers"
+import { Execute, Respondable, ResponseMessage } from "@atomist/rug/operations/Handlers"
 
 Given("nothing", f => { });
 
@@ -27,7 +27,7 @@ When("the TravisBuildRug is invoked", (world: HandlerScenarioWorld) => {
 Then("the plan contains a starting message", (world: HandlerScenarioWorld) => {
     let w: CommandHandlerScenarioWorld = world as CommandHandlerScenarioWorld;
     const expected = `Starting Travis CI build for Rug project ${owner}/${repo}`;
-    const message = w.plan().messages[0].body;
+    const message = (w.plan().messages[0] as ResponseMessage).body;
     console.log(`message:${message}`);
     return message == expected;
 });
