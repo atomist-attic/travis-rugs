@@ -9,9 +9,10 @@ import { Tag } from '@atomist/cortex/Tag';
     new PathExpression<Build, Build>(
         `/Build
             [@provider='travis']
-            [/commit::Commit()[/author::GitHubId()[/person::Person()/chatId::ChatId()]?]
+            [/commit::Commit()
+                [/author::GitHubId()[/person::Person()/chatId::ChatId()]?]
                 [/tags::Tag()]?]
-                [/repo::Repo()/channels::ChatChannel()]
+            [/repo::Repo()/channels::ChatChannel()]
             [/push::Push()
                 [/commits::Commit()/author::GitHubId()
                     [/person::Person()/chatId::ChatId()]?]
@@ -87,7 +88,6 @@ export const built = new Built()
         `/Build
             [@provider='travis']
             [/repo::Repo()/channels::ChatChannel()]
-            [/commit::Commit()]
             [/pullRequest::PullRequest()
                 [/author::GitHubId()[/person::Person()/chatId::ChatId()]?]
                 [/commits::Commit()/author::GitHubId()[/person::Person()/chatId::ChatId()]?]
