@@ -17,7 +17,7 @@ import { Tag } from '@atomist/cortex/Tag';
                     [/person::Person()/chatId::ChatId()]?]
                 [/repo::Repo()]]`))
 @Tags("ci", "travis")
-class Built implements HandleEvent<Build, Build> {
+class TravisBuild implements HandleEvent<Build, Build> {
     handle(event: Match<Build, Build>): Plan {
         let build = event.root()
         let plan = new Plan()
@@ -79,8 +79,7 @@ class Built implements HandleEvent<Build, Build> {
         return plan
     }
 }
-export const built = new Built()
-
+export const travisBuild = new TravisBuild()
 
 @EventHandler("TravisBuildsPrs", "Handle build events from pull-requests",
     new PathExpression<Build, Build>(
@@ -96,8 +95,9 @@ export const built = new Built()
 class PRBuild implements HandleEvent<Build, Build> {
     handle(event: Match<Build, Build>): Plan {
         let build = event.root()
+        const pr = build.pullRequest;
     
-        let cid = "commit_event/" + build.repo.owner + "/" + build.repo.name + "/" + build.commit.sha
+        const cid = "pr_event/" + pr.repo.owner + "/" + pr.repo.name + "/" + pr.number;
         let message = new LifecycleMessage(build, cid)
         
         // TODO split this into two handlers with proper tree expressions with predicates
@@ -132,4 +132,4 @@ class PRBuild implements HandleEvent<Build, Build> {
     }
 }
 
-export const prBuilt = new PRBuild();
+export const prTravisBuild = new PRBuild();
