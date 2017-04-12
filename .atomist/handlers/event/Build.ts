@@ -17,7 +17,7 @@ import { Tag } from '@atomist/cortex/Tag';
                     [/person::Person()/chatId::ChatId()]?]
                 [/repo::Repo()]]`))
 @Tags("ci", "travis")
-class TravisBuild implements HandleEvent<Build, Build> {
+class Built implements HandleEvent<Build, Build> {
     handle(event: Match<Build, Build>): Plan {
         let build = event.root()
         let plan = new Plan()
@@ -79,7 +79,8 @@ class TravisBuild implements HandleEvent<Build, Build> {
         return plan
     }
 }
-export const travisBuild = new TravisBuild()
+export const built = new Built()
+
 
 @EventHandler("TravisBuildsPrs", "Handle build events from pull-requests",
     new PathExpression<Build, Build>(
@@ -132,4 +133,4 @@ class PRBuild implements HandleEvent<Build, Build> {
     }
 }
 
-export const prTravisBuild = new PRBuild();
+export const prBuilt = new PRBuild();
