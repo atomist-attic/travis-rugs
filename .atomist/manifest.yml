@@ -3,6 +3,6 @@ artifact: "travis-handlers"
 version: "0.10.0"
 requires: "0.25.1"
 dependencies:
-  - "atomist-rugs:github-handlers:0.30.2"
+  - "atomist-rugs:github-handlers:0.31.0"
 extensions:
   - "com.atomist.rug:rug-functions-travis:0.7.0"
