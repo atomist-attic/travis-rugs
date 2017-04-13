@@ -101,23 +101,20 @@ class PRBuild implements HandleEvent<Build, Build> {
         const cid = "pr_event/" + pr.repo.owner + "/" + pr.repo.name + "/" + pr.number;
         let message = new LifecycleMessage(build, cid)
         
-        // TODO split this into two handlers with proper tree expressions with predicates
         if (build.status == "passed") {
             message.addAction({
-                label: 'Release',
+                label: "Merge",
                 instruction: {
                     kind: "command",
-                    name: { group: "atomist-rugs", artifact: "github-handlers", name: "CreateGitHubRelease" },
+                    name: "MergeGitHubPullRequest",
                     parameters: {
-                        owner: build.repo.owner,
-                        repo: build.repo.name
-                    }
-                }
-            })
+                        issue: pr.number,
+                    },
+                }});
         }
         else if (build.status == "failed" || build.status == "broken") {
             message.addAction({
-                label: 'Restart',
+                label: 'Restart Build',
                 instruction: {
                     kind: "command",
                     name: "RestartTravisBuild",
