@@ -106,7 +106,7 @@ class PRBuild implements HandleEvent<Build, Build> {
                 label: "Merge",
                 instruction: {
                     kind: "command",
-                    name: "MergeGitHubPullRequest",
+                    name: { group: "atomist-rugs", artifact: "github-handlers", name: "MergeGitHubPullRequest" },
                     parameters: {
                         issue: pr.number,
                     },
