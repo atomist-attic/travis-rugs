@@ -40,6 +40,16 @@ $ slack_team=SLACK_TEAM_ID
 $ rug command -urX -l --team-id=$slack_team TravisBuildRug owner=github-user-or-org repo=repo-name version=1.2.3 teamId=$slack_team
 ```
 
+## Support
+
+General support questions should be discussed in the `#support`
+channel on our community Slack team
+at [atomist-community.slack.com][slack].
+
+If you find a problem, please create an [issue][].
+
+[issue]: https://github.com/atomist/travis-handlers/issues
+
 ## Developing
 
 A very clean build and test:
@@ -47,3 +57,10 @@ A very clean build and test:
 ```
 $ find .atomist/{handlers,tests} -name '*.js' -print0 | xargs -0 rm && ( cd .atomist && \rm -rf node_modules && npm install ) && rug clean && rug test -urX
 ```
+
+---
+Created by [Atomist][atomist].
+Need Help?  [Join our Slack team][slack].
+
+[atomist]: https://www.atomist.com/
+[slack]: https://join.atomist.com/
