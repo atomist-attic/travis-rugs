@@ -1,7 +1,7 @@
 group: "atomist"
 artifact: "travis-handlers"
 version: "0.13.0"
-requires: "0.26.1"
+requires: "[0.26.1,0.27.0)"
 dependencies:
   - "atomist:github-handlers:[0.33.0,1.0.0)"
 extensions:
