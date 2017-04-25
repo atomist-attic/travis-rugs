@@ -106,6 +106,7 @@ export const built = new Built();
             [/repo::Repo()/channels::ChatChannel()]
             [/pullRequest::PullRequest()
                 [/author::GitHubId()[/person::Person()/chatId::ChatId()]?]
+                [/merger::GitHubId()[/person::Person()/chatId::ChatId()]?]?
                 [/commits::Commit()/author::GitHubId()[/person::Person()/chatId::ChatId()]?]
                 [/repo::Repo()]]`))
 @Tags("ci", "travis")
