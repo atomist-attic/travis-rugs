@@ -7,7 +7,17 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
 
-[Unreleased]: https://github.com/atomist/travis-rugs/compare/0.13.0...HEAD
+[Unreleased]: https://github.com/atomist/travis-rugs/compare/0.13.1...HEAD
+
+## [0.13.1] - 2017-04-25
+
+[0.13.1]: https://github.com/atomist/travis-rugs/compare/0.13.0...0.13.1
+
+Group release
+
+### Fixed
+
+-   github-rugs group name
 
 ## [0.13.0] - 2017-04-25
 
