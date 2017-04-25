@@ -1,11 +1,18 @@
-# Atomist 'travis-handlers'
+# Atomist 'travis-rugs'
 
-[![Build Status](https://travis-ci.org/atomist/travis-handlers.svg?branch=master)](https://travis-ci.org/atomist/travis-handlers)
+[![Build Status](https://travis-ci.org/atomist/travis-rugs.svg?branch=master)](https://travis-ci.org/atomist/travis-rugs)
 [![Slack Status](https://join.atomist.com/badge.svg)](https://join.atomist.com/)
 
-A set of Rug _handlers_ that that deal with Travis CI
+A set of Rugs that that integrate with [Travis CI][travis].
 
-Read read more about this at [Automating Our Development Flow With Atomist](https://medium.com/the-composition/automating-our-development-flow-with-atomist-6b0ec73348b6#.hwa55uv8o).
+[travis]: https://travis-ci.org/
+
+Read more about automating software development
+at [Automating Our Development Flow With Atomist][blog].  Detailed
+documentation is available in the [Atomist Documentation][docs].
+
+[blog]: https://medium.com/the-composition/automating-our-development-flow-with-atomist-6b0ec73348b6#.hwa55uv8o
+[docs]: http://docs.atomist.com/
 
 ## Support
 
@@ -15,7 +22,7 @@ at [atomist-community.slack.com][slack].
 
 If you find a problem, please create an [issue][].
 
-[issue]: https://github.com/atomist/travis-handlers/issues
+[issue]: https://github.com/atomist/travis-rugs/issues
 
 ## Contributing
 

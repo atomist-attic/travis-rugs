@@ -56,7 +56,7 @@ class Built implements HandleEvent<Build, Build> {
                         label: "Release",
                         instruction: {
                             kind: "command",
-                            name: { group: "atomist-rugs", artifact: "github-handlers", name: "CreateGitHubRelease" },
+                            name: { group: "atomist-rugs", artifact: "github-rugs", name: "CreateGitHubRelease" },
                             parameters: {
                                 owner: build.repo.owner,
                                 repo: build.repo.name,
@@ -122,7 +122,7 @@ class PRBuild implements HandleEvent<Build, Build> {
                 label: "Merge",
                 instruction: {
                     kind: "command",
-                    name: { group: "atomist-rugs", artifact: "github-handlers", name: "MergeGitHubPullRequest" },
+                    name: { group: "atomist-rugs", artifact: "github-rugs", name: "MergeGitHubPullRequest" },
                     parameters: {
                         issue: pr.number,
                     },
