@@ -1,6 +1,25 @@
-import { HandleResponse, Execute, Respondable, MappedParameters, HandleCommand, Respond, Response, HandlerContext, Plan } from '@atomist/rug/operations/Handlers'
-import { ResponseHandler, ParseJson, CommandHandler, Secrets, MappedParameter, Parameter, Tags, Intent } from '@atomist/rug/operations/Decorators'
-import { wrap } from '@atomist/rugs/operations/CommonHandlers';
+/*
+ * Copyright © 2017 Atomist, Inc.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+import { CommandHandler, Intent, Parameter, Secrets, Tags } from "@atomist/rug/operations/Decorators";
+import {
+    CommandPlan, CommandRespondable, Execute, HandleCommand, HandlerContext,
+} from "@atomist/rug/operations/Handlers";
+
+import { wrap } from "@atomist/rugs/operations/CommonHandlers";
 
 @CommandHandler("RestartTravisBuild", "Restart a Travis CI build")
 @Tags("travis-ci", "ci")
@@ -9,23 +28,23 @@ import { wrap } from '@atomist/rugs/operations/CommonHandlers';
 class RestartBuild implements HandleCommand {
 
     @Parameter({ description: "The Travis CI build ID", pattern: "^.*$" })
-    buildId: number
+    public buildId: number;
 
     @Parameter({ description: ".org or .com", pattern: "^\.com|\.org$" })
-    org: string = ".org"
+    public org: string = ".org";
 
-    handle(ctx: HandlerContext): Plan {
-        let plan = new Plan();
-        let execute: Respondable<Execute> = {
+    public handle(ctx: HandlerContext): CommandPlan {
+        const plan = new CommandPlan();
+        const execute: CommandRespondable<Execute> = {
             instruction: {
                 kind: "execute",
                 name: "restart-travis-build",
-                parameters: this
-            }
-        }
+                parameters: this,
+            },
+        };
         plan.add(wrap(execute, `Successfully restarted Travis build ${this.buildId}`, this));
         return plan;
     }
 }
 
-export const restarter = new RestartBuild();
+export const restartBuild = new RestartBuild();

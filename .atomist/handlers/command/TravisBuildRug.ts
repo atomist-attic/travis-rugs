@@ -1,7 +1,28 @@
-import { HandleCommand, HandlerContext, Plan, Respondable, Execute, MappedParameters, HandleResponse, Response, ResponseMessage } from '@atomist/rug/operations/Handlers';
-import { CommandHandler, Parameter, Tags, Intent, MappedParameter, Secrets, ResponseHandler } from '@atomist/rug/operations/Decorators';
-import { Pattern } from '@atomist/rug/operations/RugOperation';
-import { wrap } from '@atomist/rugs/operations/CommonHandlers';
+/*
+ * Copyright © 2017 Atomist, Inc.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+import {
+    CommandHandler, Intent, MappedParameter, Parameter, Secrets, Tags,
+} from "@atomist/rug/operations/Decorators";
+import {
+    CommandPlan, CommandRespondable, Execute, HandleCommand, HandlerContext,
+    MappedParameters, ResponseMessage,
+} from "@atomist/rug/operations/Handlers";
+import { Pattern } from "@atomist/rug/operations/RugOperation";
+import { wrap } from "@atomist/rugs/operations/CommonHandlers";
 
 /**
  * A command handler to trigger build of a Rug archive on Travis CI.
@@ -14,7 +35,7 @@ import { wrap } from '@atomist/rugs/operations/CommonHandlers';
     "secret://team?path=maven_base_url",
     "secret://team?path=maven_user",
     "secret://team?path=maven_token",
-    "github://user_token?scopes=repo"
+    "github://user_token?scopes=repo",
 )
 export class TravisBuildRug implements HandleCommand {
 
@@ -25,9 +46,9 @@ export class TravisBuildRug implements HandleCommand {
         validInput: "a semantic version, it must be unique",
         minLength: 5,
         maxLength: 100,
-        required: true
+        required: true,
     })
-    version: string;
+    public version: string;
 
     @Parameter({
         displayName: "Git Reference",
@@ -36,33 +57,33 @@ export class TravisBuildRug implements HandleCommand {
         validInput: "a valid Git reference",
         minLength: 1,
         maxLength: 100,
-        required: false
+        required: false,
     })
-    gitRef: string = "master";
+    public gitRef: string = "master";
 
     @MappedParameter(MappedParameters.GITHUB_REPOSITORY)
-    repo: string;
+    public repo: string;
 
     @MappedParameter(MappedParameters.GITHUB_REPO_OWNER)
-    owner: string;
+    public owner: string;
 
     @MappedParameter(MappedParameters.SLACK_TEAM)
-    teamId: string;
+    public teamId: string;
 
-    handle(command: HandlerContext): Plan {
-        let plan: Plan = new Plan();
+    public handle(command: HandlerContext): CommandPlan {
+        const plan: CommandPlan = new CommandPlan();
 
         const msgTail = `Travis CI build for Rug project ${this.owner}/${this.repo}`;
 
-        let message: ResponseMessage = new ResponseMessage(`Starting ${msgTail}`);
+        const message: ResponseMessage = new ResponseMessage(`Starting ${msgTail}`);
         plan.add(message);
 
-        let execute: Respondable<Execute> = {
+        const execute: CommandRespondable<Execute> = {
             instruction: {
                 kind: "execute",
                 name: "travis-build-rug",
-                parameters: this
-            }
+                parameters: this,
+            },
         };
         plan.add(wrap(execute, `Successfully started ${msgTail}`, this));
         return plan;

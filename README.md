@@ -50,13 +50,46 @@ If you find a problem, please create an [issue][].
 
 [issue]: https://github.com/atomist/travis-handlers/issues
 
+## Contributing
+
+If you are interested in contributing to the Atomist open source
+projects, please see our [contributing guidelines][contrib] and
+our [code of conduct][code].
+
+[contrib]: https://github.com/atomist/welcome/blob/master/CONTRIBUTING.md
+[code]: https://github.com/atomist/welcome/blob/master/CODE_OF_CONDUCT.md
+
 ## Developing
 
-A very clean build and test:
+You can build, test, and install the project locally with
+the [Rug CLI][cli].
+
+[cli]: https://github.com/atomist/rug-cli
 
 ```
-$ find .atomist/{handlers,tests} -name '*.js' -print0 | xargs -0 rm && ( cd .atomist && \rm -rf node_modules && npm install ) && rug clean && rug test -urX
+$ rug test
+$ rug install
 ```
+
+To clean up cached files and update TypeScript dependencies, run this
+command.
+
+```
+$ ( cd .atomist && find editors generators handlers tests -name '*.js' -print0 | xargs -0 rm; rm -rf node_modules; yarn && rug clean )
+```
+
+To create a new release of the project, simply push a tag of the form
+`M.N.P` where `M`, `N`, and `P` are integers that form the next
+appropriate [semantic version][semver] for release.  For example:
+
+[semver]: http://semver.org
+
+```
+$ git tag -a 1.2.3
+```
+
+The Travis CI build (see badge at the top of this page) will upload
+the needed artifacts.
 
 ---
 Created by [Atomist][atomist].
