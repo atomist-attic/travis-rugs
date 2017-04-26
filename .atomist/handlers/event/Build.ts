@@ -38,7 +38,7 @@ import { Tag } from "@atomist/cortex/Tag";
 @Tags("ci", "travis")
 class Built implements HandleEvent<Build, Build> {
     public handle(event: Match<Build, Build>): EventPlan {
-        const build = event.root();
+        const build = event.root;
         const plan = new EventPlan();
 
         const repo = build.repo.name;
@@ -112,7 +112,7 @@ export const built = new Built();
 @Tags("ci", "travis")
 class PRBuild implements HandleEvent<Build, Build> {
     public handle(event: Match<Build, Build>): EventPlan {
-        const build = event.root();
+        const build = event.root;
         const pr = build.pullRequest;
 
         const cid = "pr_event/" + pr.repo.owner + "/" + pr.repo.name + "/" + pr.number;
