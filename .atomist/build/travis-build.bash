@@ -4,7 +4,7 @@
 set -o pipefail
 
 declare Pkg=travis-build
-declare Version=0.5.0
+declare Version=0.5.1
 
 function msg() {
     echo "$Pkg: $*"
@@ -36,9 +36,16 @@ function main () {
     fi
     msg "rug CLI version: $version"
 
-    if ! ( cd .atomist && tslint '**/*.ts' --exclude 'node_modules/**' ); then
+    if ! ( cd .atomist && yarn lint ); then
         err "tslint failed"
         return 1
+    fi
+
+    if [[ -d .atomist/mocha ]]; then
+        if ! ( cd .atomist && mocha --compilers ts:espower-typescript/guess 'mocha/**/*.ts' ); then
+            err "mocha tests failed"
+            return 1
+        fi
     fi
 
     local rug=$HOME/.atomist/rug-cli-$version/bin/rug
