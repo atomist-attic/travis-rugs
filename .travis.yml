@@ -27,3 +27,4 @@ notifications:
 cache:
   directories:
   - $HOME/.atomist
+  - $HOME/.cache/yarn
