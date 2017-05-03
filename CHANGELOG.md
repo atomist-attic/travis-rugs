@@ -9,6 +9,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 [Unreleased]: https://github.com/atomist/travis-rugs/compare/0.16.0...HEAD
 
+### Added
+
+-   Rugs to enable and disable builds on a repo
+
 ## [0.16.0] - 2017-04-27
 
 [0.16.0]: https://github.com/atomist/travis-rugs/compare/0.15.0...0.16.0
