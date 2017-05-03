@@ -13,7 +13,7 @@
     "yarn": "^0.23.4"
   },
   "directories": {
-    "test": "mocha/"
+    "test": "mocha"
   },
   "scripts": {
     "mocha": "mocha --compilers ts:espower-typescript/guess 'mocha/**/*.ts'",
