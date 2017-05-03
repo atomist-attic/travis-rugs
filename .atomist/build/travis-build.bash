@@ -129,8 +129,6 @@ function main () {
 
     if [[ $TRAVIS_BRANCH == master || $TRAVIS_TAG =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
         msg "publishing archive to $TEAM_ID"
-        git status
-        git diff
         if ! $rug publish -a "$project_version"; then
             err "failed to publish archive $project_version"
             return 1
