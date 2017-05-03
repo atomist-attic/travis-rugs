@@ -61,7 +61,7 @@ function main () {
 
     if [[ -f .atomist/package.json ]]; then
         msg "running yarn"
-        if ! ( cd .atomist && yarn ); then
+        if ! ( cd .atomist && yarn --frozen-lockfile ); then
             err "yarn failed"
             return 1
         fi
@@ -131,6 +131,7 @@ function main () {
         msg "publishing archive to $TEAM_ID"
         if ! $rug publish -a "$project_version"; then
             err "failed to publish archive $project_version"
+            git diff
             return 1
         fi
 
