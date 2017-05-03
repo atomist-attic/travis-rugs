@@ -36,18 +36,6 @@ function main () {
     fi
     msg "rug CLI version: $version"
 
-    if ! ( cd .atomist && yarn lint ); then
-        err "tslint failed"
-        return 1
-    fi
-
-    if [[ -d .atomist/mocha ]]; then
-        if ! ( cd .atomist && mocha --compilers ts:espower-typescript/guess 'mocha/**/*.ts' ); then
-            err "mocha tests failed"
-            return 1
-        fi
-    fi
-
     local rug=$HOME/.atomist/rug-cli-$version/bin/rug
     if [[ ! -x $rug ]]; then
         msg "downloading rug CLI"
@@ -76,6 +64,20 @@ function main () {
         if ! ( cd .atomist && yarn ); then
             err "yarn failed"
             return 1
+        fi
+
+        msg "running lint"
+        if ! ( cd .atomist && yarn lint ); then
+            err "tslint failed"
+            return 1
+        fi
+
+        if [[ -d .atomist/mocha ]]; then
+            msg "running mocha tests"
+            if ! ( cd .atomist && yarn run mocha ); then
+                err "mocha tests failed"
+                return 1
+            fi
         fi
     fi
 
