@@ -4,7 +4,7 @@
 set -o pipefail
 
 declare Pkg=travis-build
-declare Version=0.5.1
+declare Version=0.6.0
 
 function msg() {
     echo "$Pkg: $*"
@@ -60,17 +60,23 @@ function main () {
     export TEAM_ID=T1L0VDKJP
 
     if [[ -f .atomist/package.json ]]; then
+        msg "running git diff"
+        git diff
         msg "running yarn"
         if ! ( cd .atomist && yarn --frozen-lockfile ); then
             err "yarn failed"
             return 1
         fi
+        msg "running git diff"
+        git diff
 
         msg "running lint"
-        if ! ( cd .atomist && yarn lint ); then
+        if ! ( cd .atomist && yarn run lint ); then
             err "tslint failed"
             return 1
         fi
+        msg "running git diff"
+        git diff
 
         if [[ -d .atomist/mocha ]]; then
             msg "running mocha tests"
@@ -79,6 +85,8 @@ function main () {
                 return 1
             fi
         fi
+        msg "running git diff"
+        git diff
     fi
 
     msg "running tests"
