@@ -60,6 +60,8 @@ function main () {
     export TEAM_ID=T1L0VDKJP
 
     if [[ -f .atomist/package.json ]]; then
+        yarn cache dir
+        yarn cache ls
         msg "running git diff"
         git diff
         msg "running yarn"
@@ -69,14 +71,14 @@ function main () {
         fi
         msg "running git diff"
         git diff
+        yarn cache ls
+        yarn cache dir
 
         msg "running lint"
         if ! ( cd .atomist && yarn run lint ); then
             err "tslint failed"
             return 1
         fi
-        msg "running git diff"
-        git diff
 
         if [[ -d .atomist/mocha ]]; then
             msg "running mocha tests"
@@ -85,8 +87,6 @@ function main () {
                 return 1
             fi
         fi
-        msg "running git diff"
-        git diff
     fi
 
     msg "running tests"
