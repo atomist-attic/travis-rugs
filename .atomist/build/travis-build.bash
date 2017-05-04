@@ -60,15 +60,13 @@ function main () {
     export TEAM_ID=T1L0VDKJP
 
     if [[ -f .atomist/package.json ]]; then
-        msg "running git diff"
-        git diff
         msg "running yarn"
+        # this should use --frozen-lockfile but
+        # https://github.com/yarnpkg/yarn/issues/3313
         if ! ( cd .atomist && yarn --pure-lockfile ); then
             err "yarn failed"
             return 1
         fi
-        msg "running git diff"
-        git diff
 
         msg "running lint"
         if ! ( cd .atomist && yarn run lint ); then
