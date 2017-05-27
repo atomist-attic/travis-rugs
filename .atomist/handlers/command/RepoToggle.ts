@@ -23,7 +23,7 @@ import { wrap } from "@atomist/rugs/operations/CommonHandlers";
 /**
  * Enable or disable a repo build on Travis CI.
  */
-export function repoToggle(enable: boolean, org: string, repo: string, owner: string): CommandPlan {
+export function repoToggle(enable: boolean, repo: string, owner: string): CommandPlan {
     const fnName = (enable) ? "travis-enable-repo" : "travis-disable-repo";
     const action = (enable) ? "enabled" : "disabled";
     const actioning = action.replace("ed", "ing");
@@ -35,7 +35,7 @@ export function repoToggle(enable: boolean, org: string, repo: string, owner: st
         instruction: {
             kind: "execute",
             name: fnName,
-            parameters: { owner, repo, org },
+            parameters: { owner, repo },
         },
     };
     plan.add(wrap(execute, `Successfully ${action} ${owner}/${repo} on Travis CI`, this));

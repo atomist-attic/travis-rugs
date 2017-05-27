@@ -35,7 +35,7 @@ import { Tag } from "@atomist/cortex/Tag";
                 [/commits::Commit()/author::GitHubId()
                     [/person::Person()/chatId::ChatId()]?]
                 [/repo::Repo()]]`))
-@Tags("ci", "travis")
+@Tags("ci", "travis-ci")
 class Built implements HandleEvent<Build, Build> {
     public handle(event: Match<Build, Build>): EventPlan {
         const build = event.root;

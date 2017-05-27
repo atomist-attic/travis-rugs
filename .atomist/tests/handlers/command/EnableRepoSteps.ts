@@ -25,16 +25,6 @@ const testRepo = "tupelo";
 When("the EnableRepo is invoked", (w: CommandHandlerScenarioWorld) => {
     const handler = w.commandHandler("EnableRepo");
     w.invokeHandler(handler, {
-        org: ".org",
-        owner: testOwner,
-        repo: testRepo,
-    });
-});
-
-When("the EnableRepo is invoked with a bad parameter", (w: CommandHandlerScenarioWorld) => {
-    const handler = w.commandHandler("EnableRepo");
-    w.invokeHandler(handler, {
-        org: ".not",
         owner: testOwner,
         repo: testRepo,
     });

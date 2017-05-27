@@ -15,7 +15,7 @@
  */
 
 import {
-    CommandHandler, Intent, MappedParameter, Parameter, Tags,
+    CommandHandler, Intent, MappedParameter, Parameter, Secrets, Tags,
 } from "@atomist/rug/operations/Decorators";
 import {
     CommandPlan, HandleCommand, HandlerContext, MappedParameters,
@@ -24,7 +24,7 @@ import {
 import { wrap } from "@atomist/rugs/operations/CommonHandlers";
 
 import { repoToggle } from "./RepoToggle";
-import { TravisParameters } from "./TravisParameters";
+import { travisSecretPath } from "./SecretPath";
 
 /**
  * A disable repository build on Travis CI command handler.
@@ -32,10 +32,8 @@ import { TravisParameters } from "./TravisParameters";
 @CommandHandler("DisableRepo", "disable repository build on Travis CI")
 @Tags("travis-ci", "ci")
 @Intent("disable travis")
+@Secrets(travisSecretPath)
 export class DisableRepo implements HandleCommand {
-
-    @Parameter(TravisParameters.APIEndpoint)
-    public org: string = ".org";
 
     @MappedParameter(MappedParameters.GITHUB_REPOSITORY)
     public repo: string;
@@ -44,7 +42,7 @@ export class DisableRepo implements HandleCommand {
     public owner: string;
 
     public handle(command: HandlerContext): CommandPlan {
-        return repoToggle(false, this.org, this.repo, this.owner);
+        return repoToggle(false, this.repo, this.owner);
     }
 }
 

@@ -12,12 +12,13 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-Feature: EnableRepo handlers responds to commands
-  The EnableRepo command handler should
-  enable the build on Travis CI.
+Feature: Restart a failed build from chat
+  The bot should be able to restart a failed build
+  directly from chat.
 
-  Scenario: Enabling a repo
+  Scenario: Restart a failed build
     Given nothing
-    When the EnableRepo is invoked
-    Then a message is sent
+    When RestartBuild is invoked
     Then there is an instruction
+    Then the instruction hits the GitHub API
+    Then the instruction sends the restart on success

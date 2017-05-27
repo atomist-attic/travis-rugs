@@ -28,10 +28,9 @@ describe("repoToggle", () => {
         const enabling = ((enable) ? "En" : "Dis") + "abling";
         const fn = "travis-" + ((enable) ? "en" : "dis") + "able-repo";
 
-        const org = ".com";
         const repo = "double-nickels-on-the-dime";
         const owner = "minutemen";
-        const plan = repoToggle(enable, org, repo, owner);
+        const plan = repoToggle(enable, repo, owner);
 
         assert(plan.messages.length === 1);
         assert(plan.messages[0].kind === "response");
@@ -46,7 +45,6 @@ describe("repoToggle", () => {
         const params = instruction.parameters as any;
         assert(params.owner === owner);
         assert(params.repo === repo);
-        assert(params.org === org);
         const successParams = (resp.onSuccess as Respond).parameters as any;
         assert(successParams.msg === `Successfully ${enabled} ${owner}/${repo} on Travis CI`);
     }
