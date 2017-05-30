@@ -19,7 +19,6 @@ import { CommandHandlerScenarioWorld, When } from "@atomist/rug/test/handler/Cor
 When("the DisableRepo is invoked", (w: CommandHandlerScenarioWorld) => {
     const handler = w.commandHandler("DisableRepo");
     w.invokeHandler(handler, {
-        org: ".com",
         owner: "purple",
         repo: "rain",
     });

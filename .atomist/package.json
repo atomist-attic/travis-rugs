@@ -9,15 +9,14 @@
     "mocha": "^3.2.0",
     "power-assert": "^1.4.2",
     "tslint": "^5.0.0",
-    "typescript": "2.3.2",
-    "yarn": "^0.23.4"
+    "typescript": "2.3.2"
   },
   "directories": {
     "test": "mocha"
   },
   "scripts": {
+    "lint": "tslint '**/*.ts' --exclude 'node_modules/**' -t verbose",
     "mocha": "mocha --compilers ts:espower-typescript/guess 'mocha/**/*.ts'",
-    "test": "yarn run mocha && rug test",
-    "lint": "tslint '**/*.ts' --exclude 'node_modules/**' -t verbose"
+    "test": "yarn run mocha && rug test"
   }
 }

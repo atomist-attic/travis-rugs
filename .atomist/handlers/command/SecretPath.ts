@@ -14,14 +14,4 @@
  * limitations under the License.
  */
 
-export const TravisParameters = {
-    APIEndpoint: {
-        displayName: "Travis API Endpoint",
-        description: "Travis .com or .org API to hit",
-        pattern: "^\\.(com|org)$",
-        validInput: `either ".org" or ".com"`,
-        minLength: 4,
-        maxLength: 4,
-        required: true,
-    },
-};
+export const travisSecretPath = "github://user_token?scopes=repo,read:org,user:email";

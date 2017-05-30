@@ -9,6 +9,13 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 [Unreleased]: https://github.com/atomist/travis-rugs/compare/0.17.0...HEAD
 
+### Changed
+
+-   Automatically determine the visibility of the repo rather than
+    accepting it as the "org" parameter [#8][8]
+
+[8]: https://github.com/atomist/travis-rugs/issues/8
+
 ## [0.17.0] - 2017-05-03
 
 [0.17.0]: https://github.com/atomist/travis-rugs/compare/0.16.0...0.17.0

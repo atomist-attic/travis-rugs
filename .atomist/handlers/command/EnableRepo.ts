@@ -15,7 +15,7 @@
  */
 
 import {
-    CommandHandler, Intent, MappedParameter, Parameter, Tags,
+    CommandHandler, Intent, MappedParameter, Parameter, Secrets, Tags,
 } from "@atomist/rug/operations/Decorators";
 import {
     CommandPlan, HandleCommand, HandlerContext, MappedParameters,
@@ -24,7 +24,7 @@ import {
 import { wrap } from "@atomist/rugs/operations/CommonHandlers";
 
 import { repoToggle } from "./RepoToggle";
-import { TravisParameters } from "./TravisParameters";
+import { travisSecretPath } from "./SecretPath";
 
 /**
  * An enable repository build on Travis CI command handler.
@@ -32,10 +32,8 @@ import { TravisParameters } from "./TravisParameters";
 @CommandHandler("EnableRepo", "enable repository build on Travis CI")
 @Tags("travis-ci", "ci")
 @Intent("enable travis")
+@Secrets(travisSecretPath)
 export class EnableRepo implements HandleCommand {
-
-    @Parameter(TravisParameters.APIEndpoint)
-    public org: string = ".org";
 
     @MappedParameter(MappedParameters.GITHUB_REPOSITORY)
     public repo: string;
@@ -44,7 +42,7 @@ export class EnableRepo implements HandleCommand {
     public owner: string;
 
     public handle(command: HandlerContext): CommandPlan {
-        return repoToggle(true, this.org, this.repo, this.owner);
+        return repoToggle(true, this.repo, this.owner);
     }
 }
 
