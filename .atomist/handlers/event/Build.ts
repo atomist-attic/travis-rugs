@@ -47,7 +47,6 @@ class Built implements HandleEvent<Build, Build> {
 
         const message = new LifecycleMessage(build, cid);
 
-        // TODO split this into two handlers with proper tree expressions with predicates
         if (build.status === "passed") {
             try {
                 const tag = build.commit.tags;
@@ -70,24 +69,24 @@ class Built implements HandleEvent<Build, Build> {
                 console.log((e as Error).message);
             }
         } else if (build.status === "failed" || build.status === "broken") {
-            try {
-                if (build.commit.author != null && build.commit.author.person != null) {
-                    const body = `Travis CI build \`#${build.name}\` of \`${owner}/${repo}\` failed after` +
-                        ` your last commit \`${build.commit.sha}\`: ${build.buildUrl}`;
-                    const address = new UserAddress(build.commit.author.person.chatId.id);
-                    plan.add(new DirectedMessage(body, address));
-                }
-            } catch (e) {
-                console.log((e as Error).message);
+            if (build.commit.author.person != null &&
+                build.commit.author.person.chatId != null
+                && build.commit.author.person.chatId.screenName != null) {
+                const body = `Travis CI build \`#${build.name}\` of \`${owner}/${repo}\` failed after` +
+                    ` your last commit \`${build.commit.sha}\`: ${build.buildUrl}`;
+                const screenName = build.commit.author.person.chatId.screenName;
+                const address = new UserAddress(screenName);
+                plan.add(new DirectedMessage(body, address));
             }
             message.addAction({
                 label: "Restart",
                 instruction: {
                     kind: "command",
-                    name: "RestartTravisBuild",
+                    name: "RestartBuild",
                     parameters: {
                         buildId: build.id,
-                        org: build.repo.owner,
+                        owner: build.repo.owner,
+                        repo: build.repo.name,
                     },
                 },
             });

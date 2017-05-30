@@ -13,6 +13,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 -   Automatically determine the visibility of the repo rather than
     accepting it as the "org" parameter [#8][8]
+-   Only send failed build DM if there is someone to send it to
 
 [8]: https://github.com/atomist/travis-rugs/issues/8
 
