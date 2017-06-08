@@ -94,7 +94,7 @@ export const restartBuild = new RestartBuild();
 /**
  * Response handler that parses the response to the GitHub repo API to
  * extract the visibility of the repo and then call the
- * `restart-travis-build` Rug function.
+ * `travis-restart-build` Rug function.
  *
  * @param buildId  integer ID of Travis CI build to restart
  */
@@ -113,7 +113,7 @@ export class SendRestart implements HandleResponse<any> {
         const privateKey = "private";
         const isPrivate = repo[privateKey] as boolean;
         const visibility = (isPrivate) ? "private" : "public";
-        plan.add(wrap(execute("restart-travis-build", { buildId: this.buildId, visibility }),
+        plan.add(wrap(execute("travis-restart-build", { buildId: this.buildId, visibility }),
             `Successfully restarted Travis CI build ${this.buildId}`, this));
 
         return plan;
