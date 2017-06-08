@@ -7,10 +7,17 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
 
-[Unreleased]: https://github.com/atomist/travis-rugs/compare/0.17.0...HEAD
+[Unreleased]: https://github.com/atomist/travis-rugs/compare/0.18.0...HEAD
+
+## [0.18.0] - 2017-06-08
+
+[0.18.0]: https://github.com/atomist/travis-rugs/compare/0.17.0...0.18.0
+
+Automatic release
 
 ### Changed
 
+-   Update to rug-functions-travis 0.18.0
 -   Automatically determine the visibility of the repo rather than
     accepting it as the "org" parameter [#8][8]
 

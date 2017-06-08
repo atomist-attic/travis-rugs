@@ -67,3 +67,17 @@ editor:
     - "description": "disable repo on Travis CI"
     - "intent": "disable repo"
 
+---
+kind: "operation"
+client: "com.atomist:rug"
+version: "1.0.0-m.4"
+editor:
+  name: "UpdateSupportFiles"
+  group: "atomist"
+  artifact: "rug-rugs"
+  version: "0.31.0"
+  origin:
+    repo: "git@github.com:atomist/travis-rugs.git"
+    branch: "master"
+    sha: "b361f61"
+
