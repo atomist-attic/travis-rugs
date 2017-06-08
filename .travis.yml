@@ -28,3 +28,10 @@ cache:
   directories:
   - "$HOME/.atomist"
   - node_modules
+deploy:
+  provider: releases
+  api_key:
+    secure: iGHesgN2iYNrYaAXJuT9PANME1lv0A8jy3IGU7M4AFpKncg8s3Vi1DoEoh1x+Ff+vPc0TpYfMSiurJCT2mvjrtNrMvSu7fqZXnh7VRX2Qjid3xvmWCj49IGr1MDqvCTgqgVKKD3TVt3rNjNtK6r9IPlKxU8JUi+Q7AMLRCwCwZ0NIdnng9kN0gJQuX1AjnJ2QjEgfN68teqbh7tpLqB6PCyEHS3vhF6uYzEkNMPn0gKjYVme6DH4s9NvlJV6mACobV3li7ZVUrwGhkTEC5InXNCFHlnJHXNkB6Tt/QqwKNsDaDDZ8AYKAYQr1gCkRxo6BYx3LeZBwEuJxBhH5SFED1VEsKQaP0arV/7QDwqgFcqfblbKAGACfQQVpZV/CQsH/oq6VXsS74c9u/xOJOSIeW1o8a1ztezvPo9i+ygOsVNL6UyJfBxUqVQJw5Rr7o2mJutLyQQ7vuBSVpdi9GQW9hs0Px9z046DkK09nlOG+NAWktepciaNZbgI6vH0kCuTGYrcPKumxZfejJHPkzNNjaA2xET+J29otBpci/5lesHxPcbfHQWe2JMeUTVyn4ovPMWlF+89T4py9GY1gQvYcgxjpO3+Vl6LRidnkZsTPP9Yrq78pK7vEUp4xAibbYZ3gIi+DP63k3bM7tFuNUx/n1i64uKBqEyhzZ6l34KjyMw=
+  on:
+    tags: true
+    condition: "$TRAVIS_TAG =~ ^[0-9]+\\.[0-9]+\\.[0-9]+$"
