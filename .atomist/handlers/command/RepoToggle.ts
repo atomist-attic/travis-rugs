@@ -29,7 +29,7 @@ export function repoToggle(enable: boolean, repo: string, owner: string): Comman
     const actioning = action.replace("ed", "ing");
     const Actioning = actioning.charAt(0).toUpperCase() + actioning.slice(1);
     const plan = new CommandPlan();
-    const message = new ResponseMessage(`${Actioning} Travis CI builds for ${owner}/${repo}...`);
+    const message = new ResponseMessage(`${Actioning} Travis CI builds for ${owner}/${repo}…`);
     plan.add(message);
     const execute: CommandRespondable<Execute> = {
         instruction: {

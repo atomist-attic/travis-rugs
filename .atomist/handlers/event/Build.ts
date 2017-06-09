@@ -58,8 +58,8 @@ class Built implements HandleEvent<Build, Build> {
                             kind: "command",
                             name: { group: "atomist", artifact: "github-rugs", name: "CreateGitHubRelease" },
                             parameters: {
-                                owner: build.repo.owner,
-                                repo: build.repo.name,
+                                owner,
+                                repo,
                                 tag: tag[0].name,
                                 message: "Release created by TravisBuilds",
                             },
@@ -84,10 +84,11 @@ class Built implements HandleEvent<Build, Build> {
                 label: "Restart",
                 instruction: {
                     kind: "command",
-                    name: "RestartTravisBuild",
+                    name: "RestartBuild",
                     parameters: {
                         buildId: build.id,
-                        org: build.repo.owner,
+                        repo,
+                        owner,
                     },
                 },
             });
@@ -114,8 +115,10 @@ class PRBuild implements HandleEvent<Build, Build> {
     public handle(event: Match<Build, Build>): EventPlan {
         const build = event.root;
         const pr = build.pullRequest;
+        const repo = build.repo.name;
+        const owner = build.repo.owner;
 
-        const cid = "pr_event/" + pr.repo.owner + "/" + pr.repo.name + "/" + pr.number;
+        const cid = "pr_event/" + owner + "/" + repo + "/" + pr.number;
         const message = new LifecycleMessage(build, cid);
 
         if (build.status === "passed") {
@@ -126,6 +129,8 @@ class PRBuild implements HandleEvent<Build, Build> {
                     name: { group: "atomist", artifact: "github-rugs", name: "MergeGitHubPullRequest" },
                     parameters: {
                         issue: pr.number,
+                        repo,
+                        owner,
                     },
                 },
             });
@@ -134,10 +139,11 @@ class PRBuild implements HandleEvent<Build, Build> {
                 label: "Restart Build",
                 instruction: {
                     kind: "command",
-                    name: "RestartTravisBuild",
+                    name: "RestartBuild",
                     parameters: {
                         buildId: build.id,
-                        org: build.repo.owner,
+                        repo,
+                        owner,
                     },
                 },
             });

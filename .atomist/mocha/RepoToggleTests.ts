@@ -35,7 +35,7 @@ describe("repoToggle", () => {
         assert(plan.messages.length === 1);
         assert(plan.messages[0].kind === "response");
         const msg = plan.messages[0] as ResponseMessage;
-        assert(msg.body === `${enabling} Travis CI builds for ${owner}/${repo}...`);
+        assert(msg.body === `${enabling} Travis CI builds for ${owner}/${repo}…`);
 
         assert(plan.instructions.length === 1);
         const resp = plan.instructions[0] as CommandRespondable<Execute>;
