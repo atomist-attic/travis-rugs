@@ -35,9 +35,7 @@ const buildIdParameter = {
 
 /**
  * Command handler for restarting a Travis CI build that responds to
- * the intent `restart build`.  The `repo` and `owner` are used to
- * look up the visibility of the repository so we know what Travis CI
- * API endpoint to hit.
+ * the intent `restart build`.
  *
  * @param buildId  integer ID of Travis CI build to restart
  * @param repo     name of repository
@@ -61,63 +59,11 @@ class RestartBuild implements HandleCommand {
     public handle(ctx: HandlerContext): CommandPlan {
         const plan = new CommandPlan();
 
-        const GITHUB_API_BASE = "https://api.github.com";
-        const headers = {
-            "Accept": "application/vnd.github.v3+json",
-            "Authorization": `token #{${travisSecretPath}}`,
-            "Content-Type": "application/json",
-        };
-        const response: CommandRespondable<Execute> = {
-            instruction: {
-                kind: "execute",
-                name: "http",
-                parameters: {
-                    method: "get",
-                    url: `${GITHUB_API_BASE}/repos/${this.owner}/${this.repo}`,
-                    config: { headers },
-                },
-            },
-            onSuccess: {
-                kind: "respond",
-                name: "SendRestart",
-                parameters: { buildId: this.buildId },
-            },
-        };
-        plan.add(handleErrors(response));
-
-        return plan;
-    }
-}
-
-export const restartBuild = new RestartBuild();
-
-/**
- * Response handler that parses the response to the GitHub repo API to
- * extract the visibility of the repo and then call the
- * `travis-restart-build` Rug function.
- *
- * @param buildId  integer ID of Travis CI build to restart
- */
-@ResponseHandler("SendRestart", "send restart to Travis CI API")
-@Tags("travis-ci", "ci")
-@Secrets(travisSecretPath)
-export class SendRestart implements HandleResponse<any> {
-
-    @Parameter(buildIdParameter)
-    public buildId: string;
-
-    public handle( @ParseJson response: Response<any>): CommandPlan {
-        const plan = new CommandPlan();
-
-        const repo = response.body;
-        const privateKey = "private";
-        const isPrivate = repo[privateKey] as boolean;
-        const visibility = (isPrivate) ? "private" : "public";
-        plan.add(wrap(execute("travis-restart-build", { buildId: this.buildId, visibility }),
+        plan.add(wrap(execute("travis-restart-build", this),
             `Successfully restarted Travis CI build ${this.buildId}`, this));
 
         return plan;
     }
 }
 
-export const sendRestart = new SendRestart();
+export const restartBuild = new RestartBuild();

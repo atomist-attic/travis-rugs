@@ -7,7 +7,17 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
 
-[Unreleased]: https://github.com/atomist/travis-rugs/compare/0.18.1...HEAD
+[Unreleased]: https://github.com/atomist/travis-rugs/compare/0.18.2...HEAD
+
+## [0.18.2] - 2017-06-09
+
+[0.18.2]: https://github.com/atomist/travis-rugs/compare/0.18.1...0.18.2
+
+Rerestart release
+
+### Fixed
+
+-   Correct call to travis-restart-build Rug function
 
 ## [0.18.1] - 2017-06-09
 

@@ -37,18 +37,12 @@ Then("there is an instruction", (w: CommandHandlerScenarioWorld) => {
 });
 
 /* tslint:disable:no-string-literal */
-Then("the instruction hits the GitHub API", (w: CommandHandlerScenarioWorld) => {
+Then("the instruction executes travis-restart-build", (w: CommandHandlerScenarioWorld) => {
     const instruction = w.plan().instructions[0].instruction as Execute;
+    const param = instruction.parameters as any;
     return instruction.kind === "execute"
-        && instruction.name === "http"
-        && instruction.parameters["method"] === "get"
-        && /https:\/\/api.github.com/.test(instruction.parameters["url"])
-        && instruction.parameters["url"].indexOf(`/${testOwner}/${testRepo}`) >= 0;
-});
-
-Then("the instruction sends the restart on success", (w: CommandHandlerScenarioWorld) => {
-    const onSuccess = w.plan().instructions[0].onSuccess as Respond;
-    return onSuccess.kind === "respond"
-        && onSuccess.name === "SendRestart"
-        && onSuccess.parameters["buildId"] === testBuildId;
+        && instruction.name === "travis-restart-build"
+        && param.owner === "uncle"
+        && param.repo === "tupelo"
+        && param.buildId === "1992031620";
 });

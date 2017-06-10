@@ -20,5 +20,4 @@ Feature: Restart a failed build from chat
     Given nothing
     When RestartBuild is invoked
     Then there is an instruction
-    Then the instruction hits the GitHub API
-    Then the instruction sends the restart on success
+    Then the instruction executes travis-restart-build

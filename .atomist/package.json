@@ -1,6 +1,6 @@
 {
   "name": "@atomist/travis-rugs",
-  "version": "0.18.1",
+  "version": "0.18.2",
   "author": "Atomist",
   "description": "Atomist Rugs for interacting with Travis CI",
   "license": "Apache-2.0",
@@ -45,8 +45,7 @@
       "atomist:github-rugs": "[0.37.4,1.0.0)"
     },
     "extensions": {
-      "com.atomist.rug:rug-functions-travis": "[0.18.0,0.19.0)",
-      "com.atomist.rug:rug-function-http": "[0.7.6,1.0.0)"
+      "com.atomist.rug:rug-functions-travis": "[0.18.0,0.19.0)"
     }
   }
 }
