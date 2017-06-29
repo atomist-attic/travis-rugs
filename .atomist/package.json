@@ -1,6 +1,6 @@
 {
   "name": "@atomist/travis-rugs",
-  "version": "0.18.2",
+  "version": "0.18.3",
   "author": "Atomist",
   "description": "Atomist Rugs for interacting with Travis CI",
   "license": "Apache-2.0",

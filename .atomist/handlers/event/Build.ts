@@ -38,63 +38,7 @@ import { Tag } from "@atomist/cortex/Tag";
 @Tags("ci", "travis-ci")
 class Built implements HandleEvent<Build, Build> {
     public handle(event: Match<Build, Build>): EventPlan {
-        const build = event.root;
-        const plan = new EventPlan();
-
-        const repo = build.repo.name;
-        const owner = build.repo.owner;
-        const cid = "commit_event/" + owner + "/" + repo + "/" + build.commit.sha;
-
-        const message = new LifecycleMessage(build, cid);
-
-        // TODO split this into two handlers with proper tree expressions with predicates
-        if (build.status === "passed") {
-            try {
-                const tag = build.commit.tags;
-                if (tag.length > 0) {
-                    message.addAction({
-                        label: "Release",
-                        instruction: {
-                            kind: "command",
-                            name: { group: "atomist", artifact: "github-rugs", name: "CreateGitHubRelease" },
-                            parameters: {
-                                owner,
-                                repo,
-                                tag: tag[0].name,
-                                message: "Release created by TravisBuilds",
-                            },
-                        },
-                    });
-                }
-            } catch (e) {
-                console.log((e as Error).message);
-            }
-        } else if (build.status === "failed" || build.status === "broken") {
-            try {
-                if (build.commit.author != null && build.commit.author.person != null) {
-                    const body = `Travis CI build \`#${build.name}\` of \`${owner}/${repo}\` failed after` +
-                        ` your last commit \`${build.commit.sha}\`: ${build.buildUrl}`;
-                    const address = new UserAddress(build.commit.author.person.chatId.id);
-                    plan.add(new DirectedMessage(body, address));
-                }
-            } catch (e) {
-                console.log((e as Error).message);
-            }
-            message.addAction({
-                label: "Restart",
-                instruction: {
-                    kind: "command",
-                    name: "RestartBuild",
-                    parameters: {
-                        buildId: build.id,
-                        repo,
-                        owner,
-                    },
-                },
-            });
-        }
-        plan.add(message);
-        return plan;
+        return new EventPlan();
     }
 }
 
@@ -113,43 +57,7 @@ export const built = new Built();
 @Tags("ci", "travis")
 class PRBuild implements HandleEvent<Build, Build> {
     public handle(event: Match<Build, Build>): EventPlan {
-        const build = event.root;
-        const pr = build.pullRequest;
-        const repo = build.repo.name;
-        const owner = build.repo.owner;
-
-        const cid = "pr_event/" + owner + "/" + repo + "/" + pr.number;
-        const message = new LifecycleMessage(build, cid);
-
-        if (build.status === "passed") {
-            message.addAction({
-                label: "Merge",
-                instruction: {
-                    kind: "command",
-                    name: { group: "atomist", artifact: "github-rugs", name: "MergeGitHubPullRequest" },
-                    parameters: {
-                        issue: pr.number,
-                        repo,
-                        owner,
-                    },
-                },
-            });
-        } else if (build.status === "failed" || build.status === "broken") {
-            message.addAction({
-                label: "Restart Build",
-                instruction: {
-                    kind: "command",
-                    name: "RestartBuild",
-                    parameters: {
-                        buildId: build.id,
-                        repo,
-                        owner,
-                    },
-                },
-            });
-        }
-
-        return EventPlan.ofMessage(message);
+        return new EventPlan();
     }
 }
 
