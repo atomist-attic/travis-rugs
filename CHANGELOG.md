@@ -7,7 +7,17 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
 
-[Unreleased]: https://github.com/atomist/travis-rugs/compare/0.18.2...HEAD
+[Unreleased]: https://github.com/atomist/travis-rugs/compare/0.19.0...HEAD
+
+## [0.19.0] - 2017-07-10
+
+[0.19.0]: https://github.com/atomist/travis-rugs/compare/0.18.2...0.19.0
+
+Remove Event Handlers Release
+
+### Changed
+
+-   Remove all event handlers as they now live in `lifecycle-rugs`
 
 ## [0.18.2] - 2017-06-09
 
