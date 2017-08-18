@@ -17,7 +17,7 @@
 import { CommandRespondable, Execute, ResponseMessage } from "@atomist/rug/operations/Handlers";
 import { CommandHandlerScenarioWorld, Given, Then, When } from "@atomist/rug/test/handler/Core";
 
-Given("nothing", (w) => { return; });
+Given("nothing", w => { return; });
 
 const testOwner = "uncle";
 const testRepo = "tupelo";
